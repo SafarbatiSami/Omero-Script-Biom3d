@@ -91,7 +91,7 @@ def run_as_script():
     # Call the main script
     jobs_path = SlurmClient.get_slurm_jobs_path()
     print("jobs path :",jobs_path)
-    command = "ssh localslurm srun --mail-user={0} /data/my-scratch/slurm-scripts/jobs/biom3d.sh --img_dir {1} --msk_dir {2} --num_classes {3}  --desc {4}  ".format(params[PARAM_MAIL], params[PARAM_IMG_DIR], params[PARAM_MSK_DIR], params[PARAM_NUM_CLASSES], params[PARAM_DESC])
+    #command = "ssh localslurm srun --mail-user={0} /data/my-scratch/slurm-scripts/jobs/biom3d.sh --img_dir {1} --msk_dir {2} --num_classes {3}  --desc {4}  ".format(params[PARAM_MAIL], params[PARAM_IMG_DIR], params[PARAM_MSK_DIR], params[PARAM_NUM_CLASSES], params[PARAM_DESC])
     msg = os.popen(command).read()
     
     print(msg)
