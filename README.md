@@ -12,6 +12,9 @@ They handle tasks such as:
 
 - **Sami Safarbati** – Institut de Génétique, Reproduction et Développement (iGReD), UCA, CNRS, Clermont-Ferrand, France; Institut Pascal, UCA, CNRS, Aubière, France.  
 
+- **Pierre Pouchin** – Institut de Génétique, Reproduction et Développement (iGReD), UCA, CNRS, Clermont-Ferrand, France.  
+
+
 
 
 ---
