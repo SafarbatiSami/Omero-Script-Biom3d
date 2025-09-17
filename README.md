@@ -4,35 +4,36 @@ This repository contains the set of **Python scripts** that must be deployed on 
 They handle tasks such as:  
 \- Submitting preprocessing, training, and prediction jobs to the HPC scheduler (Slurm).  
 \- Managing dataset and project metadata inside OMERO.  
-\- Ensuring results produced on the HPC are stored back into OMERO in a reproducible and traceable way.  
+\- The workflow ensure results produced on the HPC are stored back into OMERO in a reproducible and traceable way.  
   
 ---  
   
-**Developers**  
+## Developers  
   
 \- **Sami Safarbati** – Institut de Génétique, Reproduction et Développement (iGReD), UCA, CNRS, Clermont-Ferrand, France; Institut Pascal, UCA, CNRS, Aubière, France.  
 \- **Pierre Pouchin** – Institut de Génétique, Reproduction et Développement (iGReD), UCA, CNRS, Clermont-Ferrand, France.  
   
-For a complete list of contributors and affiliations, see the \[\`AUTHORS\`\](./AUTHORS) file.  
-  
+
 ---  
   
 ## Singularity Image  
   
-The HPC jobs run inside a \*\*Singularity image\*\* built directly from a Docker image hosted on \*\*DockerHub\*\*.  
-There is no \`Dockerfile\` or recipe in this repository, because the image is pulled manually:  
+The HPC jobs run inside a **Singularity image** built directly from a Docker image hosted on **DockerHub**.  
+There is no `Dockerfile` or recipe in this repository, because the image is pulled manually:  
   
 ```bash  
-singularity pull docker://<dockerhub-user>/<image-name>:<tag>  
+ singularirty build biom3d_mg.sif docker://gumougeot/biom3d:v0.1.1-x86_64-torch2.3.1-cuda11.8-cudnn8
 ```
 The resulting .sif file (e.g. biom3d.sif) is then used by the Slurm job script (biom3d.sh).  
   
 ⚠️ In the current configuration, the image path is defined as:  
   
 **/storage/groups/omero/my-scratch/singularity\_images/workflows/biom3d/biom3d.sif**  
-\- This path is specific to the Mésocentre cluster.  
+- This path is specific to the Mésocentre cluster.  
 For portability, you should adapt this path to your HPC environment or make it configurable (via environment variable or script argument).  
-OMERO Interface Scripts  
+
+---
+## OMERO Interface Scripts  
   
 \- Two Python scripts in this repository **Biom3d.py** and **Biom3d-config.py** are OMERO interface scripts.  
   
@@ -40,7 +41,7 @@ OMERO Interface Scripts
   
 \- They appear in OMERO.web and allow users to launch Biom3d jobs on the HPC directly from the OMERO interface.  
   
-\- They are not invoked by biom3d.sh directly, but act as the bridge between OMERO and the HPC job submission.  
+\- They act as the bridge between OMERO and the HPC job submission.  
 
 ---  
 
