@@ -1,38 +1,69 @@
-# OMERO–HPC Integration Scripts
+# OMERO–HPC Integration Scripts for Biom3d
+  
+This repository contains the set of **Python scripts** that must be deployed on the **OMERO server** in order to interact with the **HPC environment** for Biom3d bio-imaging workflows.  
+They handle tasks such as:  
+\- Submitting preprocessing, training, and prediction jobs to the HPC scheduler (Slurm).  
+\- Managing dataset and project metadata inside OMERO.  
+\- Ensuring results produced on the HPC are stored back into OMERO in a reproducible and traceable way.  
+  
+---  
+  
+**Developers**  
+  
+\- **Sami Safarbati** – Institut de Génétique, Reproduction et Développement (iGReD), UCA, CNRS, Clermont-Ferrand, France; Institut Pascal, UCA, CNRS, Aubière, France.  
+\- **Pierre Pouchin** – Institut de Génétique, Reproduction et Développement (iGReD), UCA, CNRS, Clermont-Ferrand, France.  
+  
+For a complete list of contributors and affiliations, see the \[\`AUTHORS\`\](./AUTHORS) file.  
+  
+---  
+  
+## Singularity Image  
+  
+The HPC jobs run inside a \*\*Singularity image\*\* built directly from a Docker image hosted on \*\*DockerHub\*\*.  
+There is no \`Dockerfile\` or recipe in this repository, because the image is pulled manually:  
+  
+```bash  
+singularity pull docker://<dockerhub-user>/<image-name>:<tag>  
+```
+The resulting .sif file (e.g. biom3d.sif) is then used by the Slurm job script (biom3d.sh).  
+  
+⚠️ In the current configuration, the image path is defined as:  
+  
+**/storage/groups/omero/my-scratch/singularity\_images/workflows/biom3d/biom3d.sif**  
+\- This path is specific to the Mésocentre cluster.  
+For portability, you should adapt this path to your HPC environment or make it configurable (via environment variable or script argument).  
+OMERO Interface Scripts  
+  
+\- Two Python scripts in this repository **Biom3d.py** and **Biom3d-config.py** are OMERO interface scripts.  
+  
+\- They must be stored on the OMERO server in the scripts directory (e.g. OMERO.server/lib/scripts/).  
+  
+\- They appear in OMERO.web and allow users to launch Biom3d jobs on the HPC directly from the OMERO interface.  
+  
+\- They are not invoked by biom3d.sh directly, but act as the bridge between OMERO and the HPC job submission.  
 
-This repository contains the set of **Python scripts** that must be deployed on the **OMERO server** in order to interact with the **HPC environment** for Biom3d used for bio-imaging workflows.  
-They handle tasks such as:
-- Submitting preprocessing and training jobs to the HPC scheduler (Slurm).
-- Managing dataset and project metadata inside OMERO.
-- Ensuring results produced on the HPC are stored back into OMERO in a reproducible way.
+---  
+
+## Usage  
+  
+
+1.  Deploy OMERO scripts
+2.  Copy Biom3d.py and Biom3d-config.py into the OMERO server scripts directory (e.g. lib/scripts).
+3.  Prepare Singularity image
+4.  On the HPC cluster, pull the Docker image with Singularity and store it in the path expected by biom3d.sh (or adapt the script).
+5.  Configure HPC job submission
+6.  Ensure the OMERO system user (omero) can submit Slurm jobs.
+7.  Grant access to GPU nodes if required.
+8.  Adapt job time, account settings, and scratch paths according to your environment.
+9.  Trigger jobs from OMERO.web
+10.  Users select images/datasets in OMERO.web, choose the Biom3d script, and parameters.
+11.  The OMERO script submits the corresponding Slurm job, which runs Biom3d inside the Singularity container.
 
 ---
 
-## Dev
+**Notes**  
+  
 
-- **Sami Safarbati** – Institut de Génétique, Reproduction et Développement (iGReD), UCA, CNRS, Clermont-Ferrand, France; Institut Pascal, UCA, CNRS, Aubière, France.  
-
-- **Pierre Pouchin** – Institut de Génétique, Reproduction et Développement (iGReD), UCA, CNRS, Clermont-Ferrand, France.  
-
-
-
-
----
-
-## Usage
-
-1. Place the scripts in the appropriate OMERO server directory (typically alongside user scripts in `lib/scripts` or the configured scripts path).
-2. Ensure the OMERO server has permission to submit jobs to the HPC (via the dedicated `omero` system user).
-3. Configure the HPC job submission settings (`slurm` accounts, GPU access, temporary scratch paths, etc.) according to your environment.
-4. From OMERO.web, users can trigger the scripts, which will handle the HPC job lifecycle transparently.
-
----
-
-## Notes
-
-- All jobs are submitted under the **`omero`** system user on the HPC(for our use case). This ensures consistency regardless of which OMERO user triggers the job.
-- The `omero` account must have access to GPU nodes and the correct Slurm accounts configured.
-- The code is designed for reproducibility and transparency: all datasets and results are traceable in OMERO.
-
-
----
+*   All jobs are submitted under the omero system user on the HPC (for our setup). This ensures consistency regardless of which OMERO user triggers the job.
+*   The current biom3d.sh contains cluster-specific paths. For reusability, adapt them to your environment or generalize with variables.
+*   The system is designed for reproducibility: all datasets, jobs, and outputs remain linked to OMERO objects.
